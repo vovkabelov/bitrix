@@ -23,6 +23,9 @@ getConfigs(currentDir).forEach(config => {
 	let treeshake = `--${config.treeshake === false ? 'no-' : ''}treeshake`;
 	let noReport = process.argv.includes('--no-report') ? '--no-report' : '';
 
+	input = path.resolve(context, input);
+	output = path.resolve(context, output);
+
 	exec(`rollup -c ${rollupConfigPath} -i ${input} -o ${output} ${name ? '-n '+name : ''} ${treeshake} --silent ${noReport}`);
 
 	if (input.includes('script.es6.js')) {
