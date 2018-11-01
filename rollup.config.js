@@ -40,11 +40,13 @@ module.exports = {
 		babel({
 			sourceMaps: true,
 			presets: [
-				path.resolve(__dirname, './node_modules/@babel/preset-env')
+				path.resolve(__dirname, './node_modules/@babel/preset-env'),
+				path.resolve(__dirname, './node_modules/@babel/preset-react')
 			],
 			plugins: [
 				path.resolve(__dirname, './node_modules/@babel/plugin-external-helpers'),
-				path.resolve(__dirname, './node_modules/@babel/plugin-transform-flow-strip-types')
+				path.resolve(__dirname, './node_modules/@babel/plugin-transform-flow-strip-types'),
+				path.resolve(__dirname, './node_modules/@babel/plugin-proposal-class-properties')
 			]
 		}),
 		reporter(reporterOptions)

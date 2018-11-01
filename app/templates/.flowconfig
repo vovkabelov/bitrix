@@ -3,9 +3,7 @@
 [include]
 
 [libs]
-flow-typed
 ./flow-typed/core.js
-./flow-typed/hyperapp.js
 
 [lints]
 
