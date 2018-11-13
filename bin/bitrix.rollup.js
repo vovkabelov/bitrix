@@ -15,9 +15,11 @@ const fs = require('fs');
 
 const customDir = process.argv[2];
 
-if (customDir) {
+if (customDir && customDir !== '--watch') {
 	currentDir = customDir;
 }
+
+const watch = process.argv.some(param => param === '--watch');
 
 getConfigs(currentDir).forEach(config => {
 	let {input, output, name, context} = config;
@@ -29,7 +31,7 @@ getConfigs(currentDir).forEach(config => {
 
 	name = name ? name : 'window';
 
-	exec(`${rollupPath} -c ${rollupConfigPath} -i ${input} -o ${output} ${name ? '-n '+name : ''} ${treeshake} --silent ${noReport}`);
+	exec(`${rollupPath} -c ${rollupConfigPath} -i ${input} -o ${output} ${name ? '-n '+name : ''} ${treeshake} ${watch ? '-w' : ''} --silent ${noReport}`);
 
 	if (input.includes('script.es6.js')) {
 		if (fs.existsSync(path.resolve(context, 'style.scss'))) {
@@ -38,7 +40,7 @@ getConfigs(currentDir).forEach(config => {
 
 			fs.copyFileSync(styleJsTemplate, styleJsPath, () => {});
 
-			exec(`rollup -c ${rollupConfigPath} -i ${styleJsPath} -o ${styleJsPath} --n ${name} --no-treeshake --silent`, () => {
+			exec(`${rollupPath} -c ${rollupConfigPath} -i ${styleJsPath} -o ${styleJsPath} --n ${name} ${watch ? '-w' : ''} --no-treeshake --silent`, () => {
 				fs.unlinkSync(styleJsPath);
 			});
 		}

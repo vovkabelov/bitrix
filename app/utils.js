@@ -1,6 +1,6 @@
 'use strict';
 
-const glob = require('glob');
+const glob = require('fast-glob');
 const path = require('path');
 
 /**
@@ -8,7 +8,15 @@ const path = require('path');
  * @return {object[]}
  */
 const getConfigs = (dir) => {
-	let extsConfig = glob.sync(path.resolve(dir, '**/bundle.config.js'), {dot: true})
+	let extsConfig = glob.sync([
+		path.resolve(dir, '**/bundle.config.js'),
+		path.resolve(dir, '**/script.es6.js')
+	], {
+		dot: true,
+		cache: true,
+		followSymlinkedDirectories: false,
+		unique: false
+	})
 		.reduce((accumulator, configPath) => {
 			let config = require(path.resolve(dir, configPath));
 			let configDir = path.dirname(path.resolve(dir, configPath));
@@ -18,64 +26,32 @@ const getConfigs = (dir) => {
 			}
 
 			config.forEach(currentConfig => {
-				accumulator.push({
-					input: currentConfig.input ? currentConfig.input : '',
-					output: currentConfig.output ? currentConfig.output : '',
-					name: currentConfig.namespace ? currentConfig.namespace : '',
-					treeshake: currentConfig.treeshake !== false,
-					context: configDir
-				});
+				if (configPath.includes('script.es6.js')) {
+					config.forEach(currentConfig => {
+						accumulator.push({
+							input: path.resolve(configDir, 'script.es6.js'),
+							output: path.resolve(configDir, 'script.js'),
+							treeshake: currentConfig.treeshake !== false,
+							context: configDir
+						});
+					});
+				}
+				else
+				{
+					accumulator.push({
+						input: currentConfig.input ? currentConfig.input : '',
+						output: currentConfig.output ? currentConfig.output : '',
+						name: currentConfig.namespace ? currentConfig.namespace : '',
+						treeshake: currentConfig.treeshake !== false,
+						context: configDir
+					});
+				}
 			});
 
 			return accumulator;
 		}, []);
 
-	let components = glob.sync(path.resolve(dir, '**/script.es6.js'), {dot: true})
-		.reduce((accumulator, configPath) => {
-			let config = require(path.resolve(dir, configPath));
-			let configDir = path.dirname(path.resolve(dir, configPath));
-
-			if (!Array.isArray(config)) {
-				config = [config];
-			}
-
-			config.forEach(currentConfig => {
-				accumulator.push({
-					input: path.resolve(configDir, 'script.es6.js'),
-					output: path.resolve(configDir, 'script.js'),
-					treeshake: currentConfig.treeshake !== false,
-					context: configDir
-				});
-			});
-
-			return accumulator;
-		}, []);
-
-	let tests = glob.sync(path.resolve(dir, '**/*.test.es6.js'), {dot: true})
-		.reduce((accumulator, configPath) => {
-			let config = {
-				input: configPath,
-				output: configPath.replace('.es6.js', '.es5.js')
-			};
-			let configDir = path.dirname(path.resolve(dir, configPath));
-
-			if (!Array.isArray(config)) {
-				config = [config];
-			}
-
-			config.forEach(currentConfig => {
-				accumulator.push({
-					input: path.resolve(currentConfig.input),
-					output: path.resolve(currentConfig.output),
-					treeshake: currentConfig.treeshake !== false,
-					context: configDir
-				});
-			});
-
-			return accumulator;
-		}, []);
-
-	return [].concat([], extsConfig, components, tests);
+	return [].concat([], extsConfig);
 };
 
 /**
@@ -113,8 +89,7 @@ const isAllowed = (fileName) => {
  */
 const isInput = (dir, fileName) => {
 	return getConfigs(dir).every(config => {
-		return fileName.includes(config.context) &&
-			!fileName.includes(path.normalize(config.output)) &&
+		return !fileName.includes(path.normalize(config.output)) &&
 			!fileName.includes(path.normalize(config.output.replace('.js', '.css')))
 	});
 };

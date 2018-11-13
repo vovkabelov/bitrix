@@ -2,7 +2,7 @@
 
 const watch = require('watch');
 const { exec } = require('shelljs');
-const { isAllowed, isInput } = require('../app/utils');
+const { isAllowed, isInput, getConfigs } = require('../app/utils');
 
 const binPath = process.env.PWD;
 const watchOptions = {
@@ -11,19 +11,21 @@ const watchOptions = {
 };
 
 watch.watchTree(binPath, watchOptions, (file) => {
-	let changedFiles = [file];
-
 	if (typeof file === 'object') {
 		exec(`bitrix:rollup`);
 		return;
 	}
 
-	let isAllowedChanges = changedFiles.some(filePath => (
-		isAllowed(filePath) && isInput(binPath, filePath)
-	));
+	let isAllowedChanges = (
+		isAllowed(file) && isInput(binPath, file)
+	);
 
 	if (isAllowedChanges)
 	{
-		exec(`bitrix:rollup`);
+		let changedConfig = getConfigs(binPath).find(config => file.includes(config.context));
+
+		if (changedConfig) {
+			exec(`bitrix:rollup ${changedConfig.context}`);
+		}
 	}
 });

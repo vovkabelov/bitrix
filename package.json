@@ -15,7 +15,9 @@
   "repository": {},
   "author": "Bitrix",
   "license": "MIT",
-  "devDependencies": {},
+  "devDependencies": {
+    "fast-glob": "^2.2.4"
+  },
   "dependencies": {
     "@babel/core": "^7.0.0",
     "@babel/plugin-external-helpers": "^7.0.0",
