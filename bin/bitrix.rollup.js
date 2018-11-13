@@ -3,7 +3,8 @@
 let {
 	binPath,
 	currentDir,
-	rollupConfigPath
+	rollupConfigPath,
+	rollupPath
 } = require('../app/constants');
 
 const { getConfigs, buildConfigBundlePath } = require('../app/utils');
@@ -26,7 +27,7 @@ getConfigs(currentDir).forEach(config => {
 	input = path.resolve(context, input);
 	output = path.resolve(context, output);
 
-	exec(`rollup -c ${rollupConfigPath} -i ${input} -o ${output} ${name ? '-n '+name : ''} ${treeshake} --silent ${noReport}`);
+	exec(`${rollupPath} -c ${rollupConfigPath} -i ${input} -o ${output} ${name ? '-n '+name : ''} ${treeshake} --silent ${noReport}`);
 
 	if (input.includes('script.es6.js')) {
 		if (fs.existsSync(path.resolve(context, 'style.scss'))) {
