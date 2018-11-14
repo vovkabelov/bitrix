@@ -15,9 +15,6 @@
   "repository": {},
   "author": "Bitrix",
   "license": "MIT",
-  "devDependencies": {
-    "fast-glob": "^2.2.4"
-  },
   "dependencies": {
     "@babel/core": "^7.0.0",
     "@babel/plugin-external-helpers": "^7.0.0",
@@ -28,6 +25,7 @@
     "@babel/register": "^7.0.0",
     "assert": "^1.4.1",
     "autoprefixer": "^9.1.5",
+    "fast-glob": "^2.2.4",
     "filesize": "^3.6.1",
     "flow-bin": "^0.80.0",
     "flow-typed": "^2.5.1",
