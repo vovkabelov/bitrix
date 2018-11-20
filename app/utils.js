@@ -18,34 +18,32 @@ const getConfigs = (dir) => {
 		unique: false
 	})
 		.reduce((accumulator, configPath) => {
-			let config = require(path.resolve(dir, configPath));
+			let config = '';
 			let configDir = path.dirname(path.resolve(dir, configPath));
+
+			if (configPath.includes('script.es6.js')) {
+				config = {
+					input: path.resolve(configDir, 'script.es6.js'),
+					output: path.resolve(configDir, 'script.js')
+				};
+			}
+			else
+			{
+				config = require(path.resolve(dir, configPath));
+			}
 
 			if (!Array.isArray(config)) {
 				config = [config];
 			}
 
 			config.forEach(currentConfig => {
-				if (configPath.includes('script.es6.js')) {
-					config.forEach(currentConfig => {
-						accumulator.push({
-							input: path.resolve(configDir, 'script.es6.js'),
-							output: path.resolve(configDir, 'script.js'),
-							treeshake: currentConfig.treeshake !== false,
-							context: configDir
-						});
-					});
-				}
-				else
-				{
-					accumulator.push({
-						input: currentConfig.input ? currentConfig.input : '',
-						output: currentConfig.output ? currentConfig.output : '',
-						name: currentConfig.namespace ? currentConfig.namespace : '',
-						treeshake: currentConfig.treeshake !== false,
-						context: configDir
-					});
-				}
+				accumulator.push({
+					input: currentConfig.input ? currentConfig.input : '',
+					output: currentConfig.output ? currentConfig.output : '',
+					name: currentConfig.namespace ? currentConfig.namespace : '',
+					treeshake: currentConfig.treeshake !== false,
+					context: configDir
+				});
 			});
 
 			return accumulator;
