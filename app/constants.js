@@ -8,6 +8,7 @@ const mochaBootstrapPath = path.resolve(binPath, '../app/test.bootstrap.js');
 const babelConfigPath = path.resolve(binPath, '../.babelrc');
 const rollupConfigPath = path.resolve(binPath, '../rollup.config.js');
 const currentDir = process.env.PWD;
+const lockFilePath = path.resolve(binPath, '../.bitrix.lock');
 
 module.exports = {
 	pwd: currentDir,
@@ -18,5 +19,6 @@ module.exports = {
 	babelConfigPath,
 	rollupConfigPath,
 	modulesPath,
-	rollupPath
+	rollupPath,
+	lockFilePath
 };

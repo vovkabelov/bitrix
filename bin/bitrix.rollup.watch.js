@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+global.testtest = 'test';
+
 const watch = require('watch');
 const logSymbols = require('log-symbols');
 const ora = require('ora');
@@ -8,6 +10,8 @@ const { build } = require('../app/tools/build');
 const Directory = require('../app/entities/directory');
 const path = require('path');
 const chokidar = require('chokidar');
+const repository = require('../app/process/repository');
+const { lockFilePath } = require('../app/constants');
 
 const argv = require('minimist')(process.argv.slice(2));
 const currentDir = argv.path || argv.p || argv._[0] || process.cwd();
@@ -53,17 +57,28 @@ buildPromise.then(() => {
 			watcherProgress.succeed(`Watcher is ready`.green.bold);
 		})
 		.on('change', (file) => {
-			let isAllowedChanges = directories
-				.every(dir => isAllowed(file) && isInput(dir, file));
+			if (!repository.isLocked()) {
+				let isAllowedChanges = directories
+					.every(dir => isAllowed(file) && isInput(dir, file));
 
-			if (isAllowedChanges) {
-				let changedConfig = directories
-					.reduce((acc, dir) => acc.concat((new Directory(dir)).getConfigs()), [])
-					.find(config => path.resolve(file).includes(config.context));
+				if (isAllowedChanges) {
+					let changedConfig = directories
+						.reduce((acc, dir) => acc.concat((new Directory(dir)).getConfigs()), [])
+						.find(config => path.resolve(file).includes(config.context));
 
-				if (changedConfig) {
-					build(path.resolve(changedConfig.context));
+					if (changedConfig) {
+						build(path.resolve(changedConfig.context));
+					}
 				}
+			}
+		});
+
+	chokidar.watch(lockFilePath)
+		.on('change', () => {
+			if (repository.isLocked()) {
+				console.log('Watcher pause');
+			} else {
+				console.log('Watcher resume');
 			}
 		});
 });
