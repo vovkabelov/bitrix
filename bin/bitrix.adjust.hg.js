@@ -4,6 +4,7 @@ const fs = require('fs');
 const os = require('os');
 const ini = require('ini');
 const path = require('path');
+const colors = require('colors');
 const { binPath } = require('../app/constants');
 
 
@@ -23,6 +24,9 @@ hgrc.hooks['update.bitrix.rollup.watcher'] = 'node ' + path.resolve(binPath, 'sh
 
 const encodedHgrc = ini.encode(hgrc);
 
-console.log(encodedHgrc);
-
-fs.writeFileSync(hgrcPath, encodedHgrc);
+try {
+	fs.writeFileSync(hgrcPath, encodedHgrc);
+	console.log(`~/.hgrc updated`.green.bold);
+} catch (err) {
+	console.error(err);
+}
