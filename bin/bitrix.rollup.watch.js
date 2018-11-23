@@ -1,31 +1,69 @@
 #!/usr/bin/env node
 
 const watch = require('watch');
-const { exec } = require('shelljs');
-const { isAllowed, isInput, getConfigs } = require('../app/utils');
+const logSymbols = require('log-symbols');
+const ora = require('ora');
+const { isAllowed, isInput, isRepositoryRoot, getDirectories } = require('../app/utils');
+const { build } = require('../app/tools/build');
+const Directory = require('../app/entities/directory');
+const path = require('path');
+const chokidar = require('chokidar');
 
-const binPath = process.env.PWD;
-const watchOptions = {
-	interval: .5,
-	async: true
-};
+const argv = require('minimist')(process.argv.slice(2));
+const currentDir = argv.path || argv.p || argv._[0] || process.cwd();
+let modules = argv.modules || argv.m;
 
-watch.watchTree(binPath, watchOptions, (file) => {
-	if (typeof file === 'object') {
-		exec(`bitrix:rollup`);
-		return;
+if (modules && modules.length) {
+	modules = modules.split(',').map(module => module.trim());
+}
+
+let buildPromise;
+
+if (isRepositoryRoot(currentDir)) {
+	buildPromise = build(modules || getDirectories(currentDir));
+} else {
+	buildPromise = build(currentDir);
+}
+
+buildPromise.then(() => {
+	let directories;
+
+	if (isRepositoryRoot(currentDir)) {
+		directories = modules || getDirectories(currentDir);
+	} else {
+		directories = [currentDir];
 	}
 
-	let isAllowedChanges = (
-		isAllowed(file) && isInput(binPath, file)
-	);
+	let pattern = [];
 
-	if (isAllowedChanges)
-	{
-		let changedConfig = getConfigs(binPath).find(config => file.includes(config.context));
+	const watcherProgress = ora('Run watcher').start();
 
-		if (changedConfig) {
-			exec(`bitrix:rollup ${changedConfig.context}`);
-		}
+	for (const dir of directories) {
+		let directory = new Directory(dir);
+		let directoryConfigs = directory.getConfigs();
+		directoryConfigs.forEach(currentConfig => {
+			pattern.push(path.resolve(currentConfig.context, '**/*.js'));
+			pattern.push(path.resolve(currentConfig.context, '**/*.css'));
+			pattern.push(path.resolve(currentConfig.context, '**/*.scss'));
+		});
 	}
+
+	chokidar.watch(pattern)
+		.on('ready', () => {
+			watcherProgress.succeed(`Watcher is ready`.green.bold);
+		})
+		.on('change', (file) => {
+			let isAllowedChanges = directories
+				.every(dir => isAllowed(file) && isInput(dir, file));
+
+			if (isAllowedChanges) {
+				let changedConfig = directories
+					.reduce((acc, dir) => acc.concat((new Directory(dir)).getConfigs()), [])
+					.find(config => path.resolve(file).includes(config.context));
+
+				if (changedConfig) {
+					build(path.resolve(changedConfig.context));
+				}
+			}
+		});
 });

@@ -10,6 +10,7 @@ const rollupConfigPath = path.resolve(binPath, '../rollup.config.js');
 const currentDir = process.env.PWD;
 
 module.exports = {
+	pwd: currentDir,
 	binPath,
 	mochaPath,
 	mochaBootstrapPath,

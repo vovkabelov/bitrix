@@ -1,61 +1,18 @@
 #!/usr/bin/env node
 
-let {
-	binPath,
-	currentDir,
-	rollupConfigPath,
-	rollupPath
-} = require('../app/constants');
+const argv = require('minimist')(process.argv.slice(2));
+const { isRepositoryRoot, getDirectories } = require('../app/utils');
+const { build } = require('../app/tools/build');
 
-const { getConfigs, buildConfigBundlePath } = require('../app/utils');
-const { exec } = require('shelljs');
-const path = require('path');
-const { renderTemplateFile } = require('template-file');
-const fs = require('fs');
+const currentDir = argv.path || argv.p || argv._[0] || process.cwd();
+let modules = argv.modules || argv.m;
 
-const customDir = process.argv[2];
-
-if (customDir && customDir !== '--watch') {
-	currentDir = customDir;
+if (modules && modules.length) {
+	modules = modules.split(',').map(module => module.trim());
 }
 
-const watch = process.argv.some(param => param === '--watch');
-
-getConfigs(currentDir).forEach(config => {
-	let {input, output, name, context} = config;
-	let treeshake = `--${config.treeshake === false ? 'no-' : ''}treeshake`;
-	let noReport = process.argv.includes('--no-report') ? '--no-report' : '';
-
-	input = path.resolve(context, input);
-	output = path.resolve(context, output);
-
-	name = name ? name : 'window';
-
-	exec(`${rollupPath} -c ${rollupConfigPath} -i ${input} -o ${output} ${name ? '-n '+name : ''} ${treeshake} ${watch ? '-w' : ''} --silent ${noReport}`);
-
-	if (input.includes('script.es6.js')) {
-		if (fs.existsSync(path.resolve(context, 'style.scss'))) {
-			let styleJsTemplate = path.resolve(binPath, '../app/templates/style.js');
-			let styleJsPath = path.resolve(context, './style.js');
-
-			fs.copyFileSync(styleJsTemplate, styleJsPath, () => {});
-
-			exec(`${rollupPath} -c ${rollupConfigPath} -i ${styleJsPath} -o ${styleJsPath} --n ${name} ${watch ? '-w' : ''} --no-treeshake --silent`, () => {
-				fs.unlinkSync(styleJsPath);
-			});
-		}
-		return;
-	}
-
-	if (!fs.existsSync(path.resolve(context, 'config.php'))) {
-		renderTemplateFile(path.resolve(binPath, '../app/templates/config.php'), {
-			cssPath: buildConfigBundlePath(output, 'css'),
-			jsPath: buildConfigBundlePath(output, 'js')
-		})
-		.then(result => {
-			fs.writeFileSync(path.resolve(context, 'config.php'), result, () => {
-
-			});
-		});
-	}
-});
+if (isRepositoryRoot(currentDir)) {
+	void build(modules || getDirectories(currentDir));
+} else {
+	void build(currentDir);
+}
