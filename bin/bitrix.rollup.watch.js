@@ -1,8 +1,5 @@
 #!/usr/bin/env node
 
-global.testtest = 'test';
-
-const watch = require('watch');
 const logSymbols = require('log-symbols');
 const ora = require('ora');
 const { isAllowed, isInput, isRepositoryRoot, getDirectories } = require('../app/utils');
