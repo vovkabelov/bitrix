@@ -1,3 +1,15 @@
 #!/usr/bin/env node
 
-require('../app/cli/bitrix');
+const updateNotifier = require('update-notifier');
+const pkg = require('../package.json');
+const notifier = updateNotifier({
+	pkg: pkg,
+	name: pkg.name,
+	version: pkg.version
+});
+
+notifier.notify();
+
+if (!notifier.update) {
+	require('../app/cli/bitrix');
+}
