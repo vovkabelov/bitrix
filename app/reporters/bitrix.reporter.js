@@ -34,5 +34,5 @@ module.exports = function(bundle) {
 		return;
 	}
 	
-	console.log(` ${logSymbols.success} Build bundle ${input}`)
+	console.log(` ${logSymbols.success} Build bundle ${bundle.bundle}`);
 };
