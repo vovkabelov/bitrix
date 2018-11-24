@@ -7,11 +7,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "bitrix:rollup": "./bin/bitrix.rollup.js",
-    "bitrix:rollup:watch": "./bin/bitrix.rollup.watch.js",
-    "bitrix:flow:init": "./bin/bitrix.flow.init.js",
-    "bitrix:test": "./bin/bitrix.test.js",
-    "bitrix:adjust:hg": "./bin/bitrix.adjust.hg.js"
+    "bitrix:rollup": "./bin/bitrix.rollup",
+    "bitrix:rollup:watch": "./bin/bitrix.rollup.watch",
+    "bitrix:flow:init": "./bin/bitrix.flow.init",
+    "bitrix:test": "./bin/bitrix.test",
+    "bitrix:adjust:hg": "./bin/bitrix.adjust.hg"
   },
   "repository": {},
   "author": "Bitrix",
