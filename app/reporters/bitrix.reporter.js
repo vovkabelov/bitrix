@@ -19,15 +19,20 @@ module.exports = function(bundle) {
 	if (isModulePath(input)) {
 		let name = buildExtensionName(input, config.context);
 		console.log(` ${logSymbols.success} Build extension ${name}`);
+		return;
 	}
 
 	if (isComponentPath(input)) {
 		let name = buildComponentName(input);
 		console.log(` ${logSymbols.success} Build component ${name}`);
+		return;
 	}
 
 	if (isTemplatePath(input)) {
 		let name = buildTemplateName(input);
 		console.log(` ${logSymbols.success} Build template ${name}`);
+		return;
 	}
+	
+	console.log(` ${logSymbols.success} Build bundle ${input}`)
 };
