@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const { rollup } = require('rollup');
 const { extendsConfig,
-	isModulePath, generateConfigPhp } = require('../../app/utils');
+	isModulePath, generateConfigPhp, buildConfigBundlePath } = require('../../app/utils');
 const { binPath } = require('../../app/constants');
 const Directory = require('../../app/entities/directory');
 
@@ -36,6 +36,12 @@ async function buildDirectory(dir) {
 		const bundle = await rollup(input);
 		await bundle.write(output);
 
+		let cssMapPath = path.resolve(config.context, `${config.output.replace('.js', '.css')}.map`);
+
+		if (fs.existsSync(cssMapPath)) {
+			adjustSourceMap(cssMapPath, config.context);
+		}
+
 		// Generate config.php if needed
 		if (isModulePath(input.input) || fs.existsSync(path.resolve(config.context, 'bundle.config.js'))) {
 			if (!fs.existsSync(path.resolve(config.context, 'config.php'))) {
@@ -44,6 +50,14 @@ async function buildDirectory(dir) {
 			}
 		}
 	}
+}
+
+function adjustSourceMap(mapPath, context) {
+	let map = JSON.parse(fs.readFileSync(mapPath, 'utf-8'));
+	map.sources = map.sources.map(sourcePath => {
+		return buildConfigBundlePath(path.relative(mapPath, sourcePath));
+	});
+	fs.writeFileSync(mapPath, JSON.stringify(map));
 }
 
 module.exports = {
