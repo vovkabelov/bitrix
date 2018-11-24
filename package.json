@@ -44,6 +44,7 @@
     "rollup-plugin-postcss-independed": "^1.7.1",
     "rollup-plugin-reporter": "^1.0.3",
     "rollup-plugin-simple-babel": "^1.0.5",
-    "shelljs": "^0.8.2"
+    "shelljs": "^0.8.2",
+    "slash": "^2.0.0"
   }
 }

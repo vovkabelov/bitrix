@@ -7,6 +7,8 @@ const mustache = require('mustache');
 const fs = require('fs');
 const Directory = require('../app/entities/directory');
 
+const slash = require('slash');
+
 /**
  * @param dir
  * @return {object[]}
@@ -76,6 +78,8 @@ const isAllowed = (fileName) => {
 		return false;
 	}
 
+	fileName = slash(fileName);
+
 	if ((new RegExp('\/components\/(.*)\/style.js')).test(fileName) ||
 		(new RegExp('\/components\/(.*)\/style.css')).test(fileName))
 	{
@@ -108,16 +112,19 @@ const isInput = (dir, fileName) => {
 };
 
 const isModulePath = (filePath) => {
+	filePath = slash(filePath);
 	let res = filePath.match(new RegExp('\/(.[a-z0-9]+)\/install\/js\/(.[a-z0-9]+)\/'));
 	return !!res && !!res[1] && !!res[2];
 };
 
 const buildModulePath = (filePath) => {
+	filePath = slash(filePath);
 	let res = filePath.match(new RegExp('\/(.[a-z0-9]+)\/install\/js\/(.[a-z0-9]+)\/'));
 	return `/bitrix/js/${res[1]}/${filePath.split(res[0])[1]}`;
 };
 
 const buildExtensionName = (filePath, context) => {
+	filePath = slash(filePath);
 	let regExp = new RegExp('\/(.[a-z0-9]+)\/install\/js\/(.[a-z0-9]+)\/');
 	let res = filePath.match(regExp);
 	let fragments = context.split(`${res[1]}/install/js/${res[2]}/`);
@@ -126,36 +133,43 @@ const buildExtensionName = (filePath, context) => {
 };
 
 const isComponentPath = (filePath) => {
+	filePath = slash(filePath);
 	let res = filePath.match(new RegExp('\/(.[a-z0-9]+)\/install\/components\/(.[a-z0-9]+)\/'));
 	return !!res && !!res[1] && !!res[2];
 };
 
 const buildComponentPath = (filePath) => {
+	filePath = slash(filePath);
 	let res = filePath.match(new RegExp('\/(.[a-z0-9]+)\/install\/components\/(.[a-z0-9]+)\/'));
 	return `/bitrix/components/${res[2]}/${filePath.split(res[0])[1]}`;
 };
 
 const buildComponentName = (filePath) => {
+	filePath = slash(filePath);
 	let regExp = new RegExp('\/(.[a-z0-9]+)\/install\/components\/(.[a-z0-9]+)\/');
 	let res = filePath.match(regExp);
 	return `${res[2]}:${filePath.split(res[0])[1].split(path.sep)[0]}`;
 };
 
 const isTemplatePath = (filePath) => {
+	filePath = slash(filePath);
 	let res = filePath.match(new RegExp('\/(.[a-z0-9]+)\/install\/templates\/(.[a-z0-9]+)\/'));
 	return !!res && !!res[1] && !!res[2];
 };
 
 const buildTemplatePath = (filePath) => {
+	filePath = slash(filePath);
 	return `/bitrix/templates/${filePath.split('install/templates/')[1]}`;
 };
 
 const buildTemplateName = (filePath) => {
+	filePath = slash(filePath);
 	let res = filePath.match(new RegExp('\/(.[a-z0-9]+)\/install\/templates\/(.[a-z0-9]+)\/'));
 	return res && res[2];
 };
 
 const buildConfigBundlePath = (filePath, ext) => {
+	filePath = slash(filePath);
 	if (isModulePath(filePath)) {
 		filePath = buildModulePath(filePath);
 	}
@@ -205,7 +219,7 @@ function generateConfigPhp(config) {
 }
 
 function getDirectories(dir) {
-	const pattern = path.resolve(dir, '**');
+	const pattern = slash(path.resolve(dir, '**'));
 	const options = {onlyDirectories: true, deep: 0};
 
 	return glob.sync(pattern, options)

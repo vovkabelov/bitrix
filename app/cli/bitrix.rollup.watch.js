@@ -9,6 +9,7 @@ const path = require('path');
 const chokidar = require('chokidar');
 const repository = require('../process/repository');
 const { lockFilePath } = require('../constants');
+const slash = require('slash');
 
 const argv = require('minimist')(process.argv.slice(2));
 const currentDir = argv.path || argv.p || process.cwd();
@@ -43,9 +44,9 @@ buildPromise.then(() => {
 		let directory = new Directory(dir);
 		let directoryConfigs = directory.getConfigs();
 		directoryConfigs.forEach(currentConfig => {
-			pattern.push(path.resolve(currentConfig.context, '**/*.js'));
-			pattern.push(path.resolve(currentConfig.context, '**/*.css'));
-			pattern.push(path.resolve(currentConfig.context, '**/*.scss'));
+			pattern.push(slash(path.resolve(currentConfig.context, '**/*.js')));
+			pattern.push(slash(path.resolve(currentConfig.context, '**/*.css')));
+			pattern.push(slash(path.resolve(currentConfig.context, '**/*.scss')));
 		});
 	}
 
