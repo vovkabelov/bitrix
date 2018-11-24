@@ -24,7 +24,7 @@ if (!('hooks' in hgrc)) {
 }
 
 hgrc.hooks['preupdate.bitrix.rollup.watcher'] = `node ${path.resolve(binPath, 'shell/preupdate.js')}`;
-hgrc.hooks['update.bitrix.rollup.watcher'] = `node path.resolve(binPath, 'shell/update.js')`;
+hgrc.hooks['update.bitrix.rollup.watcher'] = `node ${path.resolve(binPath, 'shell/update.js')}`;
 
 const encodedHgrc = ini.encode(hgrc);
 
