@@ -12,6 +12,10 @@ const hgrcPath = path.resolve(os.homedir(), '.hgrc');
 let hgrc = {};
 
 if (fs.existsSync(hgrcPath)) {
+	if (!fs.existsSync(`${hgrcPath}.backup`)) {
+		fs.copyFileSync(hgrcPath, `${hgrcPath}.backup`);
+	}
+
 	hgrc = ini.parse(fs.readFileSync(hgrcPath, 'utf-8'));
 }
 
@@ -19,8 +23,8 @@ if (!('hooks' in hgrc)) {
 	hgrc.hooks = {};
 }
 
-hgrc.hooks['preupdate.bitrix.rollup.watcher'] = 'node ' + path.resolve(binPath, 'shell/preupdate.js');
-hgrc.hooks['update.bitrix.rollup.watcher'] = 'node ' + path.resolve(binPath, 'shell/update.js');
+hgrc.hooks['preupdate.bitrix.rollup.watcher'] = `node ${path.resolve(binPath, 'shell/preupdate.js')}`;
+hgrc.hooks['update.bitrix.rollup.watcher'] = `node path.resolve(binPath, 'shell/update.js')`;
 
 const encodedHgrc = ini.encode(hgrc);
 
