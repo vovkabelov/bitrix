@@ -4,7 +4,7 @@ let {
 	currentDir,
 	mochaPath,
 	mochaBootstrapPath,
-} = require('../app/constants');
+} = require('../constants');
 
 const { exec } = require('shelljs');
 

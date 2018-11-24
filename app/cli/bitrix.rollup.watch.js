@@ -2,16 +2,16 @@
 
 const logSymbols = require('log-symbols');
 const ora = require('ora');
-const { isAllowed, isInput, isRepositoryRoot, getDirectories } = require('../app/utils');
-const { build } = require('../app/tools/build');
-const Directory = require('../app/entities/directory');
+const { isAllowed, isInput, isRepositoryRoot, getDirectories } = require('../utils');
+const { build } = require('../tools/build');
+const Directory = require('../entities/directory');
 const path = require('path');
 const chokidar = require('chokidar');
-const repository = require('../app/process/repository');
-const { lockFilePath } = require('../app/constants');
+const repository = require('../process/repository');
+const { lockFilePath } = require('../constants');
 
 const argv = require('minimist')(process.argv.slice(2));
-const currentDir = argv.path || argv.p || argv._[0] || process.cwd();
+const currentDir = argv.path || argv.p || process.cwd();
 let modules = argv.modules || argv.m;
 
 if (modules && modules.length) {

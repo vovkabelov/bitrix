@@ -7,11 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "bitrix:rollup": "./bin/bitrix.rollup",
-    "bitrix:rollup:watch": "./bin/bitrix.rollup.watch",
-    "bitrix:flow:init": "./bin/bitrix.flow.init",
-    "bitrix:test": "./bin/bitrix.test",
-    "bitrix:adjust:hg": "./bin/bitrix.adjust.hg"
+    "bitrix": "./bin/bitrix"
   },
   "repository": {},
   "author": "Bitrix",
@@ -48,7 +44,6 @@
     "rollup-plugin-postcss-independed": "^1.7.1",
     "rollup-plugin-reporter": "^1.0.3",
     "rollup-plugin-simple-babel": "^1.0.5",
-    "shelljs": "^0.8.2",
-    "watch": "^1.0.2"
+    "shelljs": "^0.8.2"
   }
 }

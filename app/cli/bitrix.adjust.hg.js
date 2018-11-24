@@ -5,7 +5,7 @@ const os = require('os');
 const ini = require('ini');
 const path = require('path');
 const colors = require('colors');
-const { binPath } = require('../app/constants');
+const { binPath } = require('../constants');
 
 
 const hgrcPath = path.resolve(os.homedir(), '.hgrc');

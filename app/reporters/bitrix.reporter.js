@@ -9,7 +9,7 @@ const Directory = require('../../app/entities/directory');
 const argv = require('minimist')(process.argv.slice(2));
 
 module.exports = function(bundle) {
-	const directory = new Directory(global.currentDirectory || argv.path || argv.p || argv._[0] || process.cwd());
+	const directory = new Directory(global.currentDirectory || argv.path || argv.p || process.cwd());
 	const configs = directory.getConfigs();
 	let input = resolve(process.cwd(), bundle.bundle);
 	let config = configs.find(currentConfig => {
