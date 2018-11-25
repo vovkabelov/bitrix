@@ -72,3 +72,4 @@ Object.keys(BX).forEach(function (key) {
 });
 
 global.BX = window.BX;
+require(path.resolve(corePath, '../core.js'));

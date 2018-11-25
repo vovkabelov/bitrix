@@ -7,10 +7,11 @@ let {
 } = require('../constants');
 
 const { exec } = require('shelljs');
+const argv = require('minimist')(process.argv.slice(2));
 
-const customDir = process.argv[2];
+const customDir = argv.p || argv.path;
 
-if (customDir) {
+if (typeof customDir === 'string') {
 	currentDir = customDir;
 }
 
