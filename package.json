@@ -23,6 +23,7 @@
     "assert": "^1.4.1",
     "autoprefixer": "^9.1.5",
     "chokidar": "^2.0.4",
+    "commander": "^2.19.0",
     "fast-glob": "^2.2.4",
     "filesize": "^3.6.1",
     "flow-bin": "^0.80.0",

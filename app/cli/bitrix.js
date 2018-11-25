@@ -1,6 +1,26 @@
 const argv = require('minimist')(process.argv.slice(2));
+const commander = require('commander');
+const pkg = require('../../package');
+const colors = require('colors');
 
-const command = argv._[0] || 'help';
+commander
+	.name(pkg.name)
+	.usage('<command> [options]')
+	.command('rollup', 'Builds all bundles from current directory')
+	.command('rollup:watch', 'Runs file change watcher for current directory')
+	.command('flow:init', 'Initializes Flow tech for current directory')
+	.command('adjust:hg', 'Adds Mercurial events handlers for all repositories')
+	.command('test', 'Runs test from ./test directory')
+	.option('-m, --modules', 'Modules list (works at repository directory only)')
+	.option('-p, --path', 'Root path')
+	.version(pkg.version, '-v, --version');
+
+const command = (
+	((argv.version || argv.v) ? 'version' : '') ||
+	((argv.help || argv.h) ? 'help' : '') ||
+	argv._[0] ||
+	'help'
+);
 
 switch (command) {
 	case 'rollup':
@@ -23,8 +43,34 @@ switch (command) {
 		require('./bitrix.adjust.hg');
 		break;
 
+	case 'version':
+		console.log(pkg.name, pkg.version);
+		break;
+
 	case 'help':
 	default:
-		console.log('help');
+		console.log(`
+    ${colors.bold('Usage:')} bitrix <command> [options]
+
+    ${colors.bold('Commands:')}
+      ${colors.bold('Bundler commands')}
+      rollup             Builds all bundles from current directory
+      rollup:watch       Runs file change watcher for current directory
+      Options:
+        -m, --modules      Run command for favorite modules
+        -p, --path         Runs command for path 
+      ${colors.gray('----------------------------------------------------------------')}
+      ${colors.bold('Technology use')}
+      flow:init          Initializes Flow tech for current directory
+      typescript:init    (soon) Initializes TypeScript tech for current directory
+      ${colors.gray('----------------------------------------------------------------')}
+      ${colors.bold('Adjusts')}
+      adjust:hg          Adds Mercurial events handlers for all repositories.
+                         The command modifies file ~/.hgrc. Before modification, 
+                         a backup copy of the file with the name will be created .hgrc.backup
+      ${colors.gray('----------------------------------------------------------------')}
+      ${colors.bold('Testing')}
+      test               Runs test from ./test directory
+		`);
 		break;
 }
