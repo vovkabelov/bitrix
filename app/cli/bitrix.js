@@ -1,19 +1,6 @@
 const argv = require('minimist')(process.argv.slice(2));
-const commander = require('commander');
 const pkg = require('../../package');
 const colors = require('colors');
-
-commander
-	.name(pkg.name)
-	.usage('<command> [options]')
-	.command('rollup', 'Builds all bundles from current directory')
-	.command('rollup:watch', 'Runs file change watcher for current directory')
-	.command('flow:init', 'Initializes Flow tech for current directory')
-	.command('adjust:hg', 'Adds Mercurial events handlers for all repositories')
-	.command('test', 'Runs test from ./test directory')
-	.option('-m, --modules', 'Modules list (works at repository directory only)')
-	.option('-p, --path', 'Root path')
-	.version(pkg.version, '-v, --version');
 
 const command = (
 	((argv.version || argv.v) ? 'version' : '') ||
