@@ -200,7 +200,7 @@ function extendsConfig(base, config) {
 	});
 	let output = Object.assign({}, base.output, {
 		file: path.resolve(config.context, config.output),
-		name: config.namespace || 'window'
+		name: config.name || 'window'
 	});
 
 	return {input, output};
