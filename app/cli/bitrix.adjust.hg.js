@@ -23,8 +23,8 @@ if (!('hooks' in hgrc)) {
 	hgrc.hooks = {};
 }
 
-hgrc.hooks['preupdate.bitrix.rollup.watcher'] = `node ${path.resolve(binPath, 'cli/bitrix.system.lock.js')}`;
-hgrc.hooks['update.bitrix.rollup.watcher'] = `node ${path.resolve(binPath, 'cli/bitrix.system.unlock.js')}`;
+hgrc.hooks['preupdate.bitrix.rollup.watcher'] = `${path.resolve(binPath, 'mercurial/hooks/preupdate.sh')}`;
+hgrc.hooks['update.bitrix.rollup.watcher'] = `${path.resolve(binPath, 'mercurial/hooks/update.sh')}`;
 
 const encodedHgrc = ini.encode(hgrc);
 
