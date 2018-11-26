@@ -56,7 +56,7 @@ module.exports = {
 		extend: true,
 		exports: 'named',
 		globals: {
-			'BX': true
+			'BX': 'BX'
 		}
 	}
 };
