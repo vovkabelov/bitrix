@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 const logSymbols = require('log-symbols');
 const ora = require('ora');
 const { isAllowed, isInput, isRepositoryRoot, getDirectories } = require('../utils');

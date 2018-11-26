@@ -30,6 +30,14 @@ switch (command) {
 		require('./bitrix.adjust.hg');
 		break;
 
+	case 'system:lock':
+		require('./bitrix.syste.lock');
+		return;
+
+	case 'system:unlock':
+		require('./bitrix.system.unlock');
+		return;
+
 	case 'version':
 		console.log(pkg.name, pkg.version);
 		break;
