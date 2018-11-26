@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const argv = require('minimist')(process.argv.slice(2));
 const pkg = require('../../package');
 const colors = require('colors');
@@ -31,7 +33,7 @@ switch (command) {
 		break;
 
 	case 'system:lock':
-		require('./bitrix.syste.lock');
+		require('./bitrix.system.lock');
 		return;
 
 	case 'system:unlock':

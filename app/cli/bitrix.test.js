@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 let {
 	currentDir,
 	mochaPath,

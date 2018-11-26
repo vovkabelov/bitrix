@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const argv = require('minimist')(process.argv.slice(2));
 const { isRepositoryRoot, getDirectories } = require('../utils');
 const { build } = require('../tools/build');

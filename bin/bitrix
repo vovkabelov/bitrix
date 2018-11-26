@@ -13,3 +13,4 @@ notifier.notify();
 if (!notifier.update) {
 	require('../app/cli/bitrix');
 }
+

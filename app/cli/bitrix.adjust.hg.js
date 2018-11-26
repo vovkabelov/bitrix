@@ -1,9 +1,12 @@
+#!/usr/bin/env node
+
 const fs = require('fs');
 const os = require('os');
 const ini = require('ini');
 const path = require('path');
 const colors = require('colors');
 const { binPath } = require('../constants');
+
 
 const hgrcPath = path.resolve(os.homedir(), '.hgrc');
 let hgrc = {};
@@ -20,8 +23,8 @@ if (!('hooks' in hgrc)) {
 	hgrc.hooks = {};
 }
 
-hgrc.hooks['preupdate.bitrix.rollup.watcher'] = `/bin/sh bitrix system:lock`;
-hgrc.hooks['update.bitrix.rollup.watcher'] = `/bin/sh bitrix system:unlock`;
+hgrc.hooks['preupdate.bitrix.rollup.watcher'] = `node ${path.resolve(binPath, 'cli/bitrix.system.lock.js')}`;
+hgrc.hooks['update.bitrix.rollup.watcher'] = `node ${path.resolve(binPath, 'cli/bitrix.system.unlock.js')}`;
 
 const encodedHgrc = ini.encode(hgrc);
 
