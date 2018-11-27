@@ -1,4 +1,5 @@
 const path = require('path');
+const os = require('os');
 
 const binPath = __dirname;
 const modulesPath = path.resolve(binPath, '../node_modules/');
@@ -8,7 +9,7 @@ const mochaBootstrapPath = path.resolve(binPath, '../app/test.bootstrap.js');
 const babelConfigPath = path.resolve(binPath, '../.babelrc');
 const rollupConfigPath = path.resolve(binPath, '../rollup.config.js');
 const currentDir = process.env.PWD;
-const lockFilePath = path.resolve(binPath, '../.bitrix.lock');
+const lockFilePath = path.resolve(os.homedir(), '.bitrix.lock');
 
 module.exports = {
 	pwd: currentDir,

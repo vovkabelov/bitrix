@@ -4,20 +4,14 @@ class Repository {
 	constructor(path) {
 		this.path = path;
 		if (!fs.existsSync(path)) {
-			fs.writeFileSync(path, 'unlocked');
+			fs.writeFileSync(path, '');
 		}
 	}
 
-	lock() {
-		fs.writeFileSync(this.path, 'locked');
-	}
-
-	unlock() {
-		fs.writeFileSync(this.path, 'unlocked');
-	}
-
-	isLocked() {
-		return fs.readFileSync(this.path, 'utf-8') === 'locked';
+	isLocked(filePath) {
+		return fs.readFileSync(this.path, 'utf-8')
+			.split('\n')
+			.some(repoPath => !!repoPath && filePath.includes(repoPath));
 	}
 }
 

@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
-bitrix system:lock
+echo $(pwd) >> ~/.bitrix.lock
+sort -u ~/.bitrix.lock -o ~/.bitrix.lock

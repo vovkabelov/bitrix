@@ -57,7 +57,7 @@ buildPromise.then(() => {
 			watcherProgress.succeed(`Watcher is ready`.green.bold);
 		})
 		.on('change', (file) => {
-			if (!repository.isLocked()) {
+			if (!repository.isLocked(file)) {
 				let isAllowedChanges = directories
 					.every(dir => isAllowed(file) && isInput(dir, file));
 
@@ -70,15 +70,6 @@ buildPromise.then(() => {
 						build(path.resolve(changedConfig.context));
 					}
 				}
-			}
-		});
-
-	chokidar.watch(lockFilePath)
-		.on('change', () => {
-			if (repository.isLocked()) {
-				console.log('Watcher pause');
-			} else {
-				console.log('Watcher resume');
 			}
 		});
 });
